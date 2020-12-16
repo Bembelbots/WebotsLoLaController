@@ -62,42 +62,42 @@ class Nao (Robot):
 
         # camera
         if self.args.camera:
-            self.cameraTop = self.getCamera("CameraTop")
-            self.cameraBottom = self.getCamera("CameraBottom")
+            self.cameraTop = self.getDevice("CameraTop")
+            self.cameraBottom = self.getDevice("CameraBottom")
             self.cameraTop.enable(self.frametime)
             self.cameraBottom.enable(self.frametime)
 
         # accelerometer
-        self.accelerometer = self.getAccelerometer('accelerometer')
+        self.accelerometer = self.getDevice('accelerometer')
         self.accelerometer.enable(self.timeStep)
 
         # gyro
-        self.gyro = self.getGyro('gyro')
+        self.gyro = self.getDevice('gyro')
         self.gyro.enable(self.timeStep)
 
         # inertial unit
-        self.inertialUnit = self.getInertialUnit('inertial unit')
+        self.inertialUnit = self.getDevice('inertial unit')
         self.inertialUnit.enable(self.timeStep)
 
         # ultrasound sensors
         self.us = []
         for i in ['Sonar/Left', 'Sonar/Right']:
-            s = self.getDistanceSensor(i)
+            s = self.getDevice(i)
             s.enable(self.timeStep)
             self.us.append(s)
 
         # foot FSR sensors
         self.fsr = []
         for i in ['LFsr', 'RFsr']:
-            f = self.getTouchSensor(i)
+            f = self.getDevice(i)
             f.enable(self.timeStep)
             self.fsr.append(f)
 
         # foot bumpers
-        self.lfootlbumper = self.getTouchSensor('LFoot/Bumper/Left')
-        self.lfootrbumper = self.getTouchSensor('LFoot/Bumper/Right')
-        self.rfootlbumper = self.getTouchSensor('RFoot/Bumper/Left')
-        self.rfootrbumper = self.getTouchSensor('RFoot/Bumper/Right')
+        self.lfootlbumper = self.getDevice('LFoot/Bumper/Left')
+        self.lfootrbumper = self.getDevice('LFoot/Bumper/Right')
+        self.rfootlbumper = self.getDevice('RFoot/Bumper/Left')
+        self.rfootrbumper = self.getDevice('RFoot/Bumper/Right')
         self.lfootlbumper.enable(self.timeStep)
         self.lfootrbumper.enable(self.timeStep)
         self.rfootlbumper.enable(self.timeStep)
@@ -105,13 +105,13 @@ class Nao (Robot):
 
         # there are 7 controlable LED groups in Webots
         self.leds = {}
-        self.leds["Chest"] = self.getLED('ChestBoard/Led')
-        self.leds["REar"] = self.getLED('Ears/Led/Right')
-        self.leds["LEar"] = self.getLED('Ears/Led/Left')
-        self.leds["LEye"] = self.getLED('Face/Led/Left')
-        self.leds["REye"] = self.getLED('Face/Led/Right')
-        self.leds["LFoot"] = self.getLED('LFoot/Led')
-        self.leds["RFoot"] = self.getLED('RFoot/Led')
+        self.leds["Chest"] = self.getDevice('ChestBoard/Led')
+        self.leds["REar"] = self.getDevice('Ears/Led/Right')
+        self.leds["LEar"] = self.getDevice('Ears/Led/Left')
+        self.leds["LEye"] = self.getDevice('Face/Led/Left')
+        self.leds["REye"] = self.getDevice('Face/Led/Right')
+        self.leds["LFoot"] = self.getDevice('LFoot/Led')
+        self.leds["RFoot"] = self.getDevice('RFoot/Led')
 
         # get phalanx motor tags
         # the real Nao has only 2 motors for RHand/LHand
@@ -121,8 +121,8 @@ class Nao (Robot):
         self.maxPhalanxMotorPosition = []
         self.minPhalanxMotorPosition = []
         for i in range(self.PHALANX_MAX):
-            self.lphalanx.append(self.getMotor("LPhalanx%d" % (i + 1)))
-            self.rphalanx.append(self.getMotor("RPhalanx%d" % (i + 1)))
+            self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
+            self.rphalanx.append(self.getDevice("RPhalanx%d" % (i + 1)))
 
             # assume right and left hands have the same motor position bounds
             self.maxPhalanxMotorPosition.append(self.rphalanx[i].getMaxPosition())
@@ -136,10 +136,10 @@ class Nao (Robot):
                   "LHipPitch", "LKneePitch", "LAnklePitch", "LAnkleRoll", "RHipRoll",
                   "RHipPitch", "RKneePitch", "RAnklePitch", "RAnkleRoll", "RShoulderPitch",
                   "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "LPhalanx1", "RPhalanx1", "RHipYawPitch" ]:
-            s = self.getPositionSensor(j+"S")
+            s = self.getDevice(j+"S")
             s.enable(self.timeStep)
             self.pos.append(s)
-            self.motors.append(self.getMotor(j))
+            self.motors.append(self.getDevice(j))
 
         self.key = -1
         self.keyboard = self.getKeyboard()
