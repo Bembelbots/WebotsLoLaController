@@ -1,7 +1,7 @@
-#VRML_SIM R2020b utf8
+#VRML_SIM R2022a utf8
 WorldInfo {
   info [
-    "SPL 2020 field with one nao"
+    "Simulation of the Robocup Standard Platform League"
   ]
   title "Robocup"
   basicTimeStep 12
@@ -24,8 +24,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -1 0 0 5.4
-  position 0.25 -3 2.5
+  orientation -0.4 0.4 0.8 1.77
+  position 0 -10 13
   followType "Pan and Tilt Shot"
 }
 TexturedBackground {
@@ -35,22 +35,17 @@ TexturedBackgroundLight {
   texture "stadium"
 }
 SPL_Field {
-  frame1Color 0.9 0.9 0.9
-  frame2Color 0.9 0.9 0.9
-  rotation 1 0 0 1.5707963
 }
-DEF SimNao0 NaoV6 {
-  translation 1.2 0 0.33
-  rotation 0 0 1 3.1416
-  name "SimNao0"
+SPL_Ball {
+}
+DEF Blue5 NaoV6 {
+  translation -0.75 3.1 0.334
+  rotation 0 0 1 -1.57
+  name "Blue5"
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_5_blue.png"
+      "textures/nao_jersey_dark_5.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0 0.75 1
   }
-}
-RobocupSoccerBall {
-  translation 0 0 0.05
-  rotation 0 0 1 0
 }

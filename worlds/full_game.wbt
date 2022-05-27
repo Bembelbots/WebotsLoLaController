@@ -1,4 +1,4 @@
-#VRML_SIM R2020b utf8
+#VRML_SIM R2022a utf8 
 WorldInfo {
   info [
     "Simulation of the Robocup Standard Platform League"
@@ -24,8 +24,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 1 0 0 0.7
-  position 0.132 -10.1 11.6
+  orientation -0.4 0.4 0.8 1.77
+  position 0 -10 13
   followType "Pan and Tilt Shot"
 }
 TexturedBackground {
@@ -35,158 +35,156 @@ TexturedBackgroundLight {
   texture "stadium"
 }
 SPL_Field {
-  frame1Color 0.9 0.9 0.9
-  frame2Color 0.9 0.9 0.9
-  rotation 1 0 0 1.5707963267948966
+}
+SPL_Ball {
 }
 DEF Blue1 NaoV6 {
-  translation -3.3 3.2 0.334
-  rotation 0.000050206880309 -0.000036000646269 -0.999999998091611 1.679740283271789
+  translation -3.9 3.1 0.334
+  rotation 0 0 1 -1.57
   name "Blue1"
   controllerArgs [
-    "--listen=10010"
+    "--listen=0.0.0.0:10010"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_1_blue.png"
+      "textures/nao_jersey_dark_1.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0 0.75 1
   }
 }
 DEF Blue2 NaoV6 {
-  translation -3.2 -3.2 0.334
-  rotation -0.000053890696141 -0.000032700774083 0.999999998013226 1.590137288372874
+  translation -3.2 -3.1 0.334
+  rotation 0 0 1 1.57
   name "Blue2"
   controllerArgs [
-    "--listen=10020"
+    "--listen=0.0.0.0:10020"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_2_blue.png"
+      "textures/nao_jersey_dark_2.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0 0.75 1
   }
 }
 DEF Blue3 NaoV6 {
-  translation -2.2 3.2 0.334
-  rotation -0.000044815132689 -0.000044272952884 -0.999999998015755 1.623749399035852
+  translation -2.325 3.1 0.334
+  rotation 0 0 1 -1.57
   name "Blue3"
   controllerArgs [
-    "--listen=10030"
+    "--listen=0.0.0.0:10030"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_3_blue.png"
+      "textures/nao_jersey_dark_3.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0 0.75 1
   }
 }
 DEF Blue4 NaoV6 {
-  translation -1.5 -3.2 0.334
-  rotation -0.003482206715974 -0.001283290569813 0.99999311367714 1.511619642969259
+  translation -1.6 -3.1 0.334
+  rotation 0 0 1 1.57
   name "Blue4"
   controllerArgs [
-    "--listen=10040"
+    "--listen=0.0.0.0:10040"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_4_blue.png"
+      "textures/nao_jersey_dark_4.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0 0.75 1
   }
 }
 DEF Blue5 NaoV6 {
-  translation -1 3.2 0.334
-  rotation -0.000048334211014 -0.000042168684773 -0.999999997942803 1.654889524508467
+  translation -0.75 3.1 0.334
+  rotation 0 0 1 -1.57
   name "Blue5"
   controllerArgs [
-    "--listen=10050"
+    "--listen=0.0.0.0:10050"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_5_blue.png"
+      "textures/nao_jersey_dark_5.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0 0.75 1
   }
 }
 DEF Red1 NaoV6 {
-  translation 3.3 -3.2 0.334
-  rotation -0.00003947604727 -0.000057636160787 0.999999997559857 1.461853971333493
+  translation 3.9 -3.1 0.334
+  rotation 0 0 1 1.57
   name "Red1"
   controllerArgs [
-    "--listen=10110"
+    "--listen=0.0.0.0:10110"
     "--tcp"
   ]
   jersey NaoJersey {
-    jerseyColor 1 1 1
+    jerseyTexture [
+      "textures/nao_jersey_dark_1.png"
+    ]
+    jerseyColor 0.5 0 0
   }
 }
 DEF Red2 NaoV6 {
-  translation 3.2 3.2 0.334
-  rotation 0.000033219479679 -0.000057531581225 -0.999999997793292 1.551452916109115
+  translation 3.2 3.1 0.334
+  rotation 0 0 1 -1.57
   name "Red2"
   controllerArgs [
-    "--listen=10120"
+    "--listen=0.0.0.0:10120"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_2_red.png"
+      "textures/nao_jersey_dark_2.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0.5 0 0
   }
 }
 DEF Red3 NaoV6 {
-  translation 2.2 -3.2 0.334
-  rotation -0.000046834072957 0.000048507498661 0.999999997726796 1.517841757868106
+  translation 2.325 -3.1 0.334
+  rotation 0 0 1 1.57
   name "Red3"
   controllerArgs [
-    "--listen=10130"
+    "--listen=0.0.0.0:10130"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_3_red.png"
+      "textures/nao_jersey_dark_3.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0.5 0 0
   }
 }
 DEF Red4 NaoV6 {
-  translation 1.5 3.2 0.334
-  rotation 0.001210022465726 -0.003280434148556 -0.999993887280032 1.629987287519705
+  translation 1.6 3.1 0.334
+  rotation 0 0 1 -1.57
   name "Red4"
   controllerArgs [
-    "--listen=10140"
+    "--listen=0.0.0.0:10140"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_4_red.png"
+      "textures/nao_jersey_dark_4.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0.5 0 0
   }
 }
 DEF Red5 NaoV6 {
-  translation 1 -3.2 0.334
-  rotation -0.000046392017895 0.000050492224177 0.999999997649158 1.486705163497338
+  translation 0.75 -3.1 0.334
+  rotation 0 0 1 1.57
   name "Red5"
   controllerArgs [
-    "--listen=10150"
+    "--listen=0.0.0.0:10150"
     "--tcp"
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_5_red.png"
+      "textures/nao_jersey_dark_5.png"
     ]
-    jerseyColor 1 1 1
+    jerseyColor 0.5 0 0
   }
-}
-RobocupSoccerBall {
-  translation 0 -0.0 0.04999676270002338
-  rotation 1 0 0 1.5707963267948966
 }

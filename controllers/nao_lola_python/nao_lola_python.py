@@ -60,86 +60,132 @@ class Nao (Robot):
         # get the time step of the current world.
         self.timeStep = int(self.getBasicTimeStep())
 
-        # camera
-        if self.args.camera:
+        self.us = []
+        self.fsr = []
+        self.leds = {}
+        self.lphalanx = []
+        self.rphalanx = []
+        self.maxPhalanxMotorPosition = []
+        self.minPhalanxMotorPosition = []
+        self.pos = []
+        self.motors = []
+
+        # get devices without spamming warnings in webots 2021
+        if self.getDevice('gyro'):
+            # webots 2021 (this does not work in 2020)
             self.cameraTop = self.getDevice("CameraTop")
             self.cameraBottom = self.getDevice("CameraBottom")
+
+            self.accelerometer = self.getDevice('accelerometer')
+            self.gyro = self.getDevice('gyro')
+            self.inertialUnit = self.getDevice('inertial unit')
+
+            for i in ['Sonar/Left', 'Sonar/Right']:
+                self.us.append(self.getDevice(i))
+
+            for i in ['LFsr', 'RFsr']:
+                self.fsr.append(self.getDevice(i))
+
+            self.lfootlbumper = self.getDevice('LFoot/Bumper/Left')
+            self.lfootrbumper = self.getDevice('LFoot/Bumper/Right')
+            self.rfootlbumper = self.getDevice('RFoot/Bumper/Left')
+            self.rfootrbumper = self.getDevice('RFoot/Bumper/Right')
+           
+            self.leds["Chest"] = self.getDevice('ChestBoard/Led')
+            self.leds["REar"] = self.getDevice('Ears/Led/Right')
+            self.leds["LEar"] = self.getDevice('Ears/Led/Left')
+            self.leds["LEye"] = self.getDevice('Face/Led/Left')
+            self.leds["REye"] = self.getDevice('Face/Led/Right')
+            self.leds["LFoot"] = self.getDevice('LFoot/Led')
+            self.leds["RFoot"] = self.getDevice('RFoot/Led')
+            
+            # finger motors
+            for i in range(self.PHALANX_MAX):
+                self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
+                self.rphalanx.append(self.getDevice("RPhalanx%d" % (i + 1)))
+
+                # assume right and left hands have the same motor position bounds
+                self.maxPhalanxMotorPosition.append(self.rphalanx[i].getMaxPosition())
+                self.minPhalanxMotorPosition.append(self.rphalanx[i].getMinPosition())
+
+            # get motors
+            for j in [ "HeadYaw", "HeadPitch", "LShoulderPitch", "LShoulderRoll",
+                      "LElbowYaw", "LElbowRoll", "LWristYaw", "LHipYawPitch", "LHipRoll",
+                      "LHipPitch", "LKneePitch", "LAnklePitch", "LAnkleRoll", "RHipRoll",
+                      "RHipPitch", "RKneePitch", "RAnklePitch", "RAnkleRoll", "RShoulderPitch",
+                      "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "LPhalanx1", "RPhalanx1", "RHipYawPitch" ]:
+                self.pos.append(self.getDevice(j+"S"))
+                self.motors.append(self.getDevice(j))
+        else:
+            # webots 2020 compability
+            self.cameraTop = self.getCamera("CameraTop")
+            self.cameraBottom = self.getCamera("CameraBottom")
+
+            self.accelerometer = self.getAccelerometer('accelerometer')
+            self.gyro = self.getGyro('gyro')
+            self.inertialUnit = self.getInertialUnit('inertial unit')
+
+            for i in ['Sonar/Left', 'Sonar/Right']:
+                self.us.append(self.getDistanceSensor(i))
+
+            for i in ['LFsr', 'RFsr']:
+                self.fsr.append(self.getTouchSensor(i))
+
+            self.lfootlbumper = self.getTouchSensor('LFoot/Bumper/Left')
+            self.lfootrbumper = self.getTouchSensor('LFoot/Bumper/Right')
+            self.rfootlbumper = self.getTouchSensor('RFoot/Bumper/Left')
+            self.rfootrbumper = self.getTouchSensor('RFoot/Bumper/Right')
+           
+            # there are 7 controlable LED groups in Webots
+            self.leds["Chest"] = self.getLED('ChestBoard/Led')
+            self.leds["REar"] = self.getLED('Ears/Led/Right')
+            self.leds["LEar"] = self.getLED('Ears/Led/Left')
+            self.leds["LEye"] = self.getLED('Face/Led/Left')
+            self.leds["REye"] = self.getLED('Face/Led/Right')
+            self.leds["LFoot"] = self.getLED('LFoot/Led')
+            self.leds["RFoot"] = self.getLED('RFoot/Led')
+            
+            # finger motors
+            for i in range(self.PHALANX_MAX):
+                self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
+                self.rphalanx.append(self.getDevice("RPhalanx%d" % (i + 1)))
+
+                # assume right and left hands have the same motor position bounds
+                self.maxPhalanxMotorPosition.append(self.rphalanx[i].getMaxPosition())
+                self.minPhalanxMotorPosition.append(self.rphalanx[i].getMinPosition())
+
+            # get motors
+            for j in [ "HeadYaw", "HeadPitch", "LShoulderPitch", "LShoulderRoll",
+                      "LElbowYaw", "LElbowRoll", "LWristYaw", "LHipYawPitch", "LHipRoll",
+                      "LHipPitch", "LKneePitch", "LAnklePitch", "LAnkleRoll", "RHipRoll",
+                      "RHipPitch", "RKneePitch", "RAnklePitch", "RAnkleRoll", "RShoulderPitch",
+                      "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "LPhalanx1", "RPhalanx1", "RHipYawPitch" ]:
+                self.pos.append(self.getPositionSensor(j+"S"))
+                self.motors.append(self.getDevice(j))
+
+
+        # enable devices
+        if self.args.camera:
             self.cameraTop.enable(self.frametime)
             self.cameraBottom.enable(self.frametime)
 
-        # accelerometer
-        self.accelerometer = self.getDevice('accelerometer')
         self.accelerometer.enable(self.timeStep)
-
-        # gyro
-        self.gyro = self.getDevice('gyro')
         self.gyro.enable(self.timeStep)
-
-        # inertial unit
-        self.inertialUnit = self.getDevice('inertial unit')
         self.inertialUnit.enable(self.timeStep)
 
-        # ultrasound sensors
-        self.us = []
-        for i in ['Sonar/Left', 'Sonar/Right']:
-            s = self.getDevice(i)
+        for s in self.us:
             s.enable(self.timeStep)
-            self.us.append(s)
 
-        # foot FSR sensors
-        self.fsr = []
-        for i in ['LFsr', 'RFsr']:
-            f = self.getDevice(i)
+        for f in self.fsr:
             f.enable(self.timeStep)
-            self.fsr.append(f)
 
-        # foot bumpers
-        self.lfootlbumper = self.getDevice('LFoot/Bumper/Left')
-        self.lfootrbumper = self.getDevice('LFoot/Bumper/Right')
-        self.rfootlbumper = self.getDevice('RFoot/Bumper/Left')
-        self.rfootrbumper = self.getDevice('RFoot/Bumper/Right')
         self.lfootlbumper.enable(self.timeStep)
         self.lfootrbumper.enable(self.timeStep)
         self.rfootlbumper.enable(self.timeStep)
         self.rfootrbumper.enable(self.timeStep)
 
-        # there are 7 controlable LED groups in Webots
-        self.leds = {}
-        self.leds["Chest"] = self.getDevice('ChestBoard/Led')
-        self.leds["REar"] = self.getDevice('Ears/Led/Right')
-        self.leds["LEar"] = self.getDevice('Ears/Led/Left')
-        self.leds["LEye"] = self.getDevice('Face/Led/Left')
-        self.leds["REye"] = self.getDevice('Face/Led/Right')
-        self.leds["LFoot"] = self.getDevice('LFoot/Led')
-        self.leds["RFoot"] = self.getDevice('RFoot/Led')
-
-        # get phalanx motor tags
-        # the real Nao has only 2 motors for RHand/LHand
-        # but in Webots we must implement RHand/LHand with 2x8 motors
-        self.lphalanx = []
-        self.rphalanx = []
-        self.maxPhalanxMotorPosition = []
-        self.minPhalanxMotorPosition = []
-        for i in range(self.PHALANX_MAX):
-            self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
-            self.rphalanx.append(self.getDevice("RPhalanx%d" % (i + 1)))
-
-            # assume right and left hands have the same motor position bounds
-            self.maxPhalanxMotorPosition.append(self.rphalanx[i].getMaxPosition())
-            self.minPhalanxMotorPosition.append(self.rphalanx[i].getMinPosition())
-
-        # get motors
-        self.pos = []
-        self.motors = []
-        for j in [ "HeadYaw", "HeadPitch", "LShoulderPitch", "LShoulderRoll",
-                  "LElbowYaw", "LElbowRoll", "LWristYaw", "LHipYawPitch", "LHipRoll",
-                  "LHipPitch", "LKneePitch", "LAnklePitch", "LAnkleRoll", "RHipRoll",
-                  "RHipPitch", "RKneePitch", "RAnklePitch", "RAnkleRoll", "RShoulderPitch",
-                  "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw", "LPhalanx1", "RPhalanx1", "RHipYawPitch" ]:
-            s = self.getDevice(j+"S")
+        for s in self.pos:
             s.enable(self.timeStep)
-            self.pos.append(s)
-            self.motors.append(self.getDevice(j))
 
         self.key = -1
         self.keyboard = self.getKeyboard()
@@ -198,11 +244,26 @@ class Nao (Robot):
         if self.key == ord('C'):
             if self.sensors["Touch"][0] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Chest button pressed." + AnsiCodes.RESET)
-            self.sensors["Touch"][0] = 1.0
+            self.sensors["Touch"][0] = 1
+        elif self.key == ord('U'):
+            if self.sensors["Touch"][2] < 1:
+                print(AnsiCodes.CYAN_FOREGROUND + "Head touched." + AnsiCodes.RESET)
+            for i in range(1,4):
+                self.sensors["Touch"][i] = 1
+        elif self.key == ord('A'):
+            if self.sensors["Touch"][1] < 1:
+                print(AnsiCodes.CYAN_FOREGROUND + "Front head & chest button pressed." + AnsiCodes.RESET)
+            self.sensors["Touch"][0] = 1
+            self.sensors["Touch"][1] = 1
         else:
             if self.sensors["Touch"][0] > 0:
                 print(AnsiCodes.CYAN_FOREGROUND + "Chest button released." + AnsiCodes.RESET)
-            self.sensors["Touch"][0] = 0.0
+            elif self.sensors["Touch"][2] > 0:
+                print(AnsiCodes.CYAN_FOREGROUND + "Head released." + AnsiCodes.RESET)
+            elif self.sensors["Touch"][1] > 0:
+                print(AnsiCodes.CYAN_FOREGROUND + "Front head & chest button released." + AnsiCodes.RESET)
+            for i in range(0,4):
+                self.sensors["Touch"][i] = 0
 
 
 
@@ -334,7 +395,10 @@ class Nao (Robot):
             print("    Bottom Camera: ", self.format_addr(self.args.bcam_addr))
         print("Options:  Camera={}  Framerate={}  SendTicks={}".format(self.args.camera, self.args.fps, self.args.send_ticks))
         print(" ")
-        print("Press 'C' to simulate chest button. (3D view must be focused)")
+        print("Button interface (3D view must have focus):")
+        print("     Press 'C' to simulate chest button")
+        print("     Press 'U' to simulate unstiff gesture (all head sensors touched)")
+        print("     Press 'A' to simulate calibration gesture (front head sensor touched & chest button pressed)")
         print(AnsiCodes.RESET + " ")
 
 
@@ -369,9 +433,11 @@ class Nao (Robot):
             if os.path.exists(self.SOCK_PATH):
                 raise
 
-        sock_type = socket.AF_UNIX
-        if (self.args.tcp):
+        if self.args.tcp:
             sock_type = socket.AF_INET
+        else:
+            sock_type = socket.AF_UNIX
+
         sock = socket.socket(sock_type, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(self.args.lola_addr)
