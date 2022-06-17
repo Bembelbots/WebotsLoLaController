@@ -239,7 +239,7 @@ class Nao (Robot):
         a.append(fsv[1][2] / 3.4 - 1.5 * fsv[1][0] - 1.15 * fsv[1][1])  # Right Foot Rear Right
         a.append(fsv[1][2] / 3.4 - 1.5 * fsv[1][0] + 1.15 * fsv[1][1])  # Right Foot Rear Left
         for i in range(len(a)):
-            self.sensors["FSR"][i] = max(0, a[i]/25.0) # fix scaling of values
+            self.sensors["FSR"][i] = max(0.0, a[i]/25.0) # fix scaling of values
 
         # set chest button if C key is pressed
         if self.key == ord('C'):
