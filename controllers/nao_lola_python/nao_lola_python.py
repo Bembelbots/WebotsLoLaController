@@ -44,7 +44,7 @@ class Nao (Robot):
         array = self.rphalanx;
         if not right:
             array = self.lphalanx
-            
+
         for i in range(self.PHALANX_MAX):
             clampedAngle = angle
             if clampedAngle > self.maxPhalanxMotorPosition[i]:
@@ -91,7 +91,7 @@ class Nao (Robot):
             self.lfootrbumper = self.getDevice('LFoot/Bumper/Right')
             self.rfootlbumper = self.getDevice('RFoot/Bumper/Left')
             self.rfootrbumper = self.getDevice('RFoot/Bumper/Right')
-           
+
             self.leds["Chest"] = self.getDevice('ChestBoard/Led')
             self.leds["REar"] = self.getDevice('Ears/Led/Right')
             self.leds["LEar"] = self.getDevice('Ears/Led/Left')
@@ -99,7 +99,7 @@ class Nao (Robot):
             self.leds["REye"] = self.getDevice('Face/Led/Right')
             self.leds["LFoot"] = self.getDevice('LFoot/Led')
             self.leds["RFoot"] = self.getDevice('RFoot/Led')
-            
+
             # finger motors
             for i in range(self.PHALANX_MAX):
                 self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
@@ -136,7 +136,7 @@ class Nao (Robot):
             self.lfootrbumper = self.getTouchSensor('LFoot/Bumper/Right')
             self.rfootlbumper = self.getTouchSensor('RFoot/Bumper/Left')
             self.rfootrbumper = self.getTouchSensor('RFoot/Bumper/Right')
-           
+
             # there are 7 controlable LED groups in Webots
             self.leds["Chest"] = self.getLED('ChestBoard/Led')
             self.leds["REar"] = self.getLED('Ears/Led/Right')
@@ -145,7 +145,7 @@ class Nao (Robot):
             self.leds["REye"] = self.getLED('Face/Led/Right')
             self.leds["LFoot"] = self.getLED('LFoot/Led')
             self.leds["RFoot"] = self.getLED('RFoot/Led')
-            
+
             # finger motors
             for i in range(self.PHALANX_MAX):
                 self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
@@ -195,7 +195,7 @@ class Nao (Robot):
 
 
     def updateSensors(self):
-        # increase tick, taking care it will not overflow 
+        # increase tick, taking care it will not overflow
         # the 16 bit unsigned image timestamp
         self.tick = (self.tick + 1) % 2**16
 
@@ -227,7 +227,7 @@ class Nao (Robot):
         # FSR
         # conversion is stolen from webots nao_demo_python controller
         fsv = [self.fsr[0].getValues(), self.fsr[1].getValues()]
-        
+
         a = []
         a.append(fsv[0][2] / 3.4 + 1.5 * fsv[0][0] + 1.15 * fsv[0][1])  # Left Foot Front Left
         a.append(fsv[0][2] / 3.4 + 1.5 * fsv[0][0] - 1.15 * fsv[0][1])  # Left Foot Front Right
@@ -339,10 +339,10 @@ class Nao (Robot):
                         dest="lola_addr", default="", metavar="ADDR",
                         help="Path for LoLa UNIX socket or address on which TCP server will listen on (\"<host>:<port>\" or \"<port>\")")
         op.add_argument("--tcam-listen=", action="store",
-                        dest="tcam_addr", default="", metavar="ADDR", 
+                        dest="tcam_addr", default="", metavar="ADDR",
                         help="Listen address for top camera image server (\"<host>:<port>\" or \"<port>\")")
         op.add_argument("--bcam-listen=", action="store",
-                        dest="bcam_addr", default="", metavar="ADDR", 
+                        dest="bcam_addr", default="", metavar="ADDR",
                         help="Listen address for bottom camera image server (\"<host>:<port>\" or \"<port>\")")
         op.add_argument("--framerate=", action="store",
                         dest="fps", default=30, type=int,
@@ -375,7 +375,7 @@ class Nao (Robot):
                 args.tcam_addr = ("localhost", self.TCP_BASE_PORT + 1)
         else:
             args.tcam_addr = self.parse_tcp_addr(args.tcam_addr)
-       
+
         # set bottom cam listen address
         if not args.bcam_addr:
             a = args.tcam_addr
@@ -455,7 +455,7 @@ class Nao (Robot):
 
             if conn:
                 self.updateSensors()
-                try: 
+                try:
                     # send sensor data to LoLa client
                     packed = umsgpack.packb(self.sensors, force_float_precision="single")
                     if len(packed) != self.MSGPACK_READ_LENGTH:
