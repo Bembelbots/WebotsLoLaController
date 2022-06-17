@@ -490,7 +490,8 @@ class Nao (Robot):
             self.topImageServer.stop()
             self.bottomImageServer.stop()
 
-
+# Enable Msgpack Old Specification Compatibility Mode, which is used in LoLA
+umsgpack.compatibility = True
 
 # create the Robot instance and run main loop
 robot = Nao()
