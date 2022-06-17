@@ -14,6 +14,7 @@ class Nao (Robot):
     DOF = 25
     PHALANX_MAX = 8
     ACTUATOR_PKT_SIZE = 786
+    MSGPACK_READ_LENGTH = 896
 
     sensors = {
         "Stiffness": [ 1.0 ] * DOF,
@@ -456,7 +457,10 @@ class Nao (Robot):
                 self.updateSensors()
                 try: 
                     # send sensor data to LoLa client
-                    conn.send(umsgpack.packb(self.sensors))
+                    packed = umsgpack.packb(self.sensors)
+                    if len(packed) != self.MSGPACK_READ_LENGTH:
+                        print(AnsiCodes.RED_FOREGROUND + "Msgpack packet size doesn't match LoLA specifications."  + AnsiCodes.RESET)
+                    conn.send(packed)
                     data = conn.recv(self.ACTUATOR_PKT_SIZE*3)
                     if data:
                         self.updateActuators(umsgpack.unpackb(data))
@@ -476,7 +480,10 @@ class Nao (Robot):
             else:
                 try:
                     (conn, addr) = sock.accept()
-                    conn.send(umsgpack.packb(self.sensors))
+                    packed = umsgpack.packb(self.sensors)
+                    if len(packed) != self.MSGPACK_READ_LENGTH:
+                        print(AnsiCodes.RED_FOREGROUND + "Msgpack packet size doesn't match LoLA specifications."  + AnsiCodes.RESET)
+                    conn.send(packed)
                     print(AnsiCodes.GREEN_FOREGROUND + "LoLa client connected." + AnsiCodes.RESET)
                 except:
                     conn = None
