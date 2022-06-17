@@ -457,7 +457,7 @@ class Nao (Robot):
                 self.updateSensors()
                 try: 
                     # send sensor data to LoLa client
-                    packed = umsgpack.packb(self.sensors)
+                    packed = umsgpack.packb(self.sensors, force_float_precision="single")
                     if len(packed) != self.MSGPACK_READ_LENGTH:
                         print(AnsiCodes.RED_FOREGROUND + "Msgpack packet size doesn't match LoLA specifications."  + AnsiCodes.RESET)
                     conn.send(packed)
@@ -480,7 +480,7 @@ class Nao (Robot):
             else:
                 try:
                     (conn, addr) = sock.accept()
-                    packed = umsgpack.packb(self.sensors)
+                    packed = umsgpack.packb(self.sensors, force_float_precision="single")
                     if len(packed) != self.MSGPACK_READ_LENGTH:
                         print(AnsiCodes.RED_FOREGROUND + "Msgpack packet size doesn't match LoLA specifications."  + AnsiCodes.RESET)
                     conn.send(packed)
