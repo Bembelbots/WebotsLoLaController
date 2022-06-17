@@ -277,35 +277,35 @@ class Nao (Robot):
 
     def updateActuators(self, actuators):
         # motors
-        if "Position" in actuators:
+        if b"Position" in actuators:
             for i in range(self.DOF-2):
-                self.motors[i].setPosition(actuators["Position"][i])
+                self.motors[i].setPosition(actuators[b"Position"][i])
             # set hands, since they have more than 1 actuator each in webots
-            self.setHands(actuators["Position"][23], actuators["Position"][24])
+            self.setHands(actuators[b"Position"][23], actuators[b"Position"][24])
             # set RHipYawPitch which does not exists in LoLa packet
-            self.motors[25].setPosition(actuators["Position"][7])
+            self.motors[25].setPosition(actuators[b"Position"][7])
 
         # LEDs
-        if "Chest" in actuators:
-            self.leds["Chest"].set(self.led_array2RGB(actuators["Chest"]))
-        if "LFoot" in actuators:
-            self.leds["LFoot"].set(self.led_array2RGB(actuators["LFoot"]))
-        if "RFoot" in actuators:
-            self.leds["RFoot"].set(self.led_array2RGB(actuators["RFoot"]))
+        if b"Chest" in actuators:
+            self.leds["Chest"].set(self.led_array2RGB(actuators[b"Chest"]))
+        if b"LFoot" in actuators:
+            self.leds["LFoot"].set(self.led_array2RGB(actuators[b"LFoot"]))
+        if b"RFoot" in actuators:
+            self.leds["RFoot"].set(self.led_array2RGB(actuators[b"RFoot"]))
 
         # webots model has only one LED per eye, so just use the first one
-        if "LEye" in actuators:
-            v = actuators["LEye"]
+        if b"LEye" in actuators:
+            v = actuators[b"LEye"]
             self.leds["LEye"].set(self.led_array2RGB([v[0], v[8], v[16]]))
-        if "REye" in actuators:
-            v = actuators["REye"]
+        if b"REye" in actuators:
+            v = actuators[b"REye"]
             self.leds["REye"].set(self.led_array2RGB([v[0], v[8], v[16]]))
 
         # webots model has only one LED per ear, so just use the first one
-        if "LEar" in actuators:
-            self.leds["LEar"].set(self.led_array2RGB([0, 0, actuators["LEar"][0]]))
-        if "REar" in actuators:
-            self.leds["REar"].set(self.led_array2RGB([0, 0, actuators["REar"][0]]))
+        if b"LEar" in actuators:
+            self.leds["LEar"].set(self.led_array2RGB([0, 0, actuators[b"LEar"][0]]))
+        if b"REar" in actuators:
+            self.leds["REar"].set(self.led_array2RGB([0, 0, actuators[b"REar"][0]]))
 
 
 
