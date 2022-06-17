@@ -245,17 +245,17 @@ class Nao (Robot):
         if self.key == ord('C'):
             if self.sensors["Touch"][0] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Chest button pressed." + AnsiCodes.RESET)
-            self.sensors["Touch"][0] = 1
+            self.sensors["Touch"][0] = 1.0
         elif self.key == ord('U'):
             if self.sensors["Touch"][2] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Head touched." + AnsiCodes.RESET)
             for i in range(1,4):
-                self.sensors["Touch"][i] = 1
+                self.sensors["Touch"][i] = 1.0
         elif self.key == ord('A'):
             if self.sensors["Touch"][1] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Front head & chest button pressed." + AnsiCodes.RESET)
-            self.sensors["Touch"][0] = 1
-            self.sensors["Touch"][1] = 1
+            self.sensors["Touch"][0] = 1.0
+            self.sensors["Touch"][1] = 1.0
         else:
             if self.sensors["Touch"][0] > 0:
                 print(AnsiCodes.CYAN_FOREGROUND + "Chest button released." + AnsiCodes.RESET)
@@ -264,7 +264,7 @@ class Nao (Robot):
             elif self.sensors["Touch"][1] > 0:
                 print(AnsiCodes.CYAN_FOREGROUND + "Front head & chest button released." + AnsiCodes.RESET)
             for i in range(0,4):
-                self.sensors["Touch"][i] = 0
+                self.sensors["Touch"][i] = 0.0
 
 
 
