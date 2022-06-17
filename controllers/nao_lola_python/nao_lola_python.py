@@ -201,7 +201,7 @@ class Nao (Robot):
 
         # update ticks (by abusing battery temperature field)
         if self.args.send_ticks:
-            self.sensors["Battery"][3] = self.tick
+            self.sensors["Battery"][3] = self.tick * 1.0  # convert to float
 
         # IMU
         a = self.accelerometer.getValues()
