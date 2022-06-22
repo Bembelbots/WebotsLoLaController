@@ -14,6 +14,7 @@ class Nao (Robot):
     DOF = 25
     PHALANX_MAX = 8
     ACTUATOR_PKT_SIZE = 786
+    MSGPACK_READ_LENGTH = 896
 
     sensors = {
         "Stiffness": [ 1.0 ] * DOF,
@@ -26,9 +27,9 @@ class Nao (Robot):
         "Angles": [ 0.0, 0.0 ],
         "Sonar": [ 0.0, 0.0 ],
         "FSR": [  0.0 ] * 8,
-        "Status": [ 0.0 ] * DOF,
+        "Status": [ 0 ] * DOF,
         "Touch": [ 0.0 ] * 14,
-        "RobotConfig": [ "0000", "6.0.0", "0000", "6.0.0" ],
+        "RobotConfig": [ "P0000000000000000000", "6.0.0", "P0000000000000000000", "6.0.0" ],
     }
 
 
@@ -43,7 +44,7 @@ class Nao (Robot):
         array = self.rphalanx;
         if not right:
             array = self.lphalanx
-            
+
         for i in range(self.PHALANX_MAX):
             clampedAngle = angle
             if clampedAngle > self.maxPhalanxMotorPosition[i]:
@@ -90,7 +91,7 @@ class Nao (Robot):
             self.lfootrbumper = self.getDevice('LFoot/Bumper/Right')
             self.rfootlbumper = self.getDevice('RFoot/Bumper/Left')
             self.rfootrbumper = self.getDevice('RFoot/Bumper/Right')
-           
+
             self.leds["Chest"] = self.getDevice('ChestBoard/Led')
             self.leds["REar"] = self.getDevice('Ears/Led/Right')
             self.leds["LEar"] = self.getDevice('Ears/Led/Left')
@@ -98,7 +99,7 @@ class Nao (Robot):
             self.leds["REye"] = self.getDevice('Face/Led/Right')
             self.leds["LFoot"] = self.getDevice('LFoot/Led')
             self.leds["RFoot"] = self.getDevice('RFoot/Led')
-            
+
             # finger motors
             for i in range(self.PHALANX_MAX):
                 self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
@@ -135,7 +136,7 @@ class Nao (Robot):
             self.lfootrbumper = self.getTouchSensor('LFoot/Bumper/Right')
             self.rfootlbumper = self.getTouchSensor('RFoot/Bumper/Left')
             self.rfootrbumper = self.getTouchSensor('RFoot/Bumper/Right')
-           
+
             # there are 7 controlable LED groups in Webots
             self.leds["Chest"] = self.getLED('ChestBoard/Led')
             self.leds["REar"] = self.getLED('Ears/Led/Right')
@@ -144,7 +145,7 @@ class Nao (Robot):
             self.leds["REye"] = self.getLED('Face/Led/Right')
             self.leds["LFoot"] = self.getLED('LFoot/Led')
             self.leds["RFoot"] = self.getLED('RFoot/Led')
-            
+
             # finger motors
             for i in range(self.PHALANX_MAX):
                 self.lphalanx.append(self.getDevice("LPhalanx%d" % (i + 1)))
@@ -194,13 +195,13 @@ class Nao (Robot):
 
 
     def updateSensors(self):
-        # increase tick, taking care it will not overflow 
+        # increase tick, taking care it will not overflow
         # the 16 bit unsigned image timestamp
         self.tick = (self.tick + 1) % 2**16
 
         # update ticks (by abusing battery temperature field)
         if self.args.send_ticks:
-            self.sensors["Battery"][3] = self.tick
+            self.sensors["Battery"][3] = self.tick * 1.0  # convert to float
 
         # IMU
         a = self.accelerometer.getValues()
@@ -226,7 +227,7 @@ class Nao (Robot):
         # FSR
         # conversion is stolen from webots nao_demo_python controller
         fsv = [self.fsr[0].getValues(), self.fsr[1].getValues()]
-        
+
         a = []
         a.append(fsv[0][2] / 3.4 + 1.5 * fsv[0][0] + 1.15 * fsv[0][1])  # Left Foot Front Left
         a.append(fsv[0][2] / 3.4 + 1.5 * fsv[0][0] - 1.15 * fsv[0][1])  # Left Foot Front Right
@@ -238,23 +239,23 @@ class Nao (Robot):
         a.append(fsv[1][2] / 3.4 - 1.5 * fsv[1][0] - 1.15 * fsv[1][1])  # Right Foot Rear Right
         a.append(fsv[1][2] / 3.4 - 1.5 * fsv[1][0] + 1.15 * fsv[1][1])  # Right Foot Rear Left
         for i in range(len(a)):
-            self.sensors["FSR"][i] = max(0, a[i]/25.0) # fix scaling of values
+            self.sensors["FSR"][i] = max(0.0, a[i]/25.0) # fix scaling of values
 
         # set chest button if C key is pressed
         if self.key == ord('C'):
             if self.sensors["Touch"][0] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Chest button pressed." + AnsiCodes.RESET)
-            self.sensors["Touch"][0] = 1
+            self.sensors["Touch"][0] = 1.0
         elif self.key == ord('U'):
             if self.sensors["Touch"][2] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Head touched." + AnsiCodes.RESET)
             for i in range(1,4):
-                self.sensors["Touch"][i] = 1
+                self.sensors["Touch"][i] = 1.0
         elif self.key == ord('A'):
             if self.sensors["Touch"][1] < 1:
                 print(AnsiCodes.CYAN_FOREGROUND + "Front head & chest button pressed." + AnsiCodes.RESET)
-            self.sensors["Touch"][0] = 1
-            self.sensors["Touch"][1] = 1
+            self.sensors["Touch"][0] = 1.0
+            self.sensors["Touch"][1] = 1.0
         else:
             if self.sensors["Touch"][0] > 0:
                 print(AnsiCodes.CYAN_FOREGROUND + "Chest button released." + AnsiCodes.RESET)
@@ -263,7 +264,7 @@ class Nao (Robot):
             elif self.sensors["Touch"][1] > 0:
                 print(AnsiCodes.CYAN_FOREGROUND + "Front head & chest button released." + AnsiCodes.RESET)
             for i in range(0,4):
-                self.sensors["Touch"][i] = 0
+                self.sensors["Touch"][i] = 0.0
 
 
 
@@ -276,35 +277,35 @@ class Nao (Robot):
 
     def updateActuators(self, actuators):
         # motors
-        if "Position" in actuators:
+        if b"Position" in actuators:
             for i in range(self.DOF-2):
-                self.motors[i].setPosition(actuators["Position"][i])
+                self.motors[i].setPosition(actuators[b"Position"][i])
             # set hands, since they have more than 1 actuator each in webots
-            self.setHands(actuators["Position"][23], actuators["Position"][24])
+            self.setHands(actuators[b"Position"][23], actuators[b"Position"][24])
             # set RHipYawPitch which does not exists in LoLa packet
-            self.motors[25].setPosition(actuators["Position"][7])
+            self.motors[25].setPosition(actuators[b"Position"][7])
 
         # LEDs
-        if "Chest" in actuators:
-            self.leds["Chest"].set(self.led_array2RGB(actuators["Chest"]))
-        if "LFoot" in actuators:
-            self.leds["LFoot"].set(self.led_array2RGB(actuators["LFoot"]))
-        if "RFoot" in actuators:
-            self.leds["RFoot"].set(self.led_array2RGB(actuators["RFoot"]))
+        if b"Chest" in actuators:
+            self.leds["Chest"].set(self.led_array2RGB(actuators[b"Chest"]))
+        if b"LFoot" in actuators:
+            self.leds["LFoot"].set(self.led_array2RGB(actuators[b"LFoot"]))
+        if b"RFoot" in actuators:
+            self.leds["RFoot"].set(self.led_array2RGB(actuators[b"RFoot"]))
 
         # webots model has only one LED per eye, so just use the first one
-        if "LEye" in actuators:
-            v = actuators["LEye"]
+        if b"LEye" in actuators:
+            v = actuators[b"LEye"]
             self.leds["LEye"].set(self.led_array2RGB([v[0], v[8], v[16]]))
-        if "REye" in actuators:
-            v = actuators["REye"]
+        if b"REye" in actuators:
+            v = actuators[b"REye"]
             self.leds["REye"].set(self.led_array2RGB([v[0], v[8], v[16]]))
 
         # webots model has only one LED per ear, so just use the first one
-        if "LEar" in actuators:
-            self.leds["LEar"].set(self.led_array2RGB([0, 0, actuators["LEar"][0]]))
-        if "REar" in actuators:
-            self.leds["REar"].set(self.led_array2RGB([0, 0, actuators["REar"][0]]))
+        if b"LEar" in actuators:
+            self.leds["LEar"].set(self.led_array2RGB([0, 0, actuators[b"LEar"][0]]))
+        if b"REar" in actuators:
+            self.leds["REar"].set(self.led_array2RGB([0, 0, actuators[b"REar"][0]]))
 
 
 
@@ -338,10 +339,10 @@ class Nao (Robot):
                         dest="lola_addr", default="", metavar="ADDR",
                         help="Path for LoLa UNIX socket or address on which TCP server will listen on (\"<host>:<port>\" or \"<port>\")")
         op.add_argument("--tcam-listen=", action="store",
-                        dest="tcam_addr", default="", metavar="ADDR", 
+                        dest="tcam_addr", default="", metavar="ADDR",
                         help="Listen address for top camera image server (\"<host>:<port>\" or \"<port>\")")
         op.add_argument("--bcam-listen=", action="store",
-                        dest="bcam_addr", default="", metavar="ADDR", 
+                        dest="bcam_addr", default="", metavar="ADDR",
                         help="Listen address for bottom camera image server (\"<host>:<port>\" or \"<port>\")")
         op.add_argument("--framerate=", action="store",
                         dest="fps", default=30, type=int,
@@ -374,7 +375,7 @@ class Nao (Robot):
                 args.tcam_addr = ("localhost", self.TCP_BASE_PORT + 1)
         else:
             args.tcam_addr = self.parse_tcp_addr(args.tcam_addr)
-       
+
         # set bottom cam listen address
         if not args.bcam_addr:
             a = args.tcam_addr
@@ -454,9 +455,12 @@ class Nao (Robot):
 
             if conn:
                 self.updateSensors()
-                try: 
+                try:
                     # send sensor data to LoLa client
-                    conn.send(umsgpack.packb(self.sensors))
+                    packed = umsgpack.packb(self.sensors, force_float_precision="single")
+                    if len(packed) != self.MSGPACK_READ_LENGTH:
+                        print(AnsiCodes.RED_FOREGROUND + "Msgpack packet size doesn't match LoLA specifications."  + AnsiCodes.RESET)
+                    conn.send(packed)
                     data = conn.recv(self.ACTUATOR_PKT_SIZE*3)
                     if data:
                         self.updateActuators(umsgpack.unpackb(data))
@@ -476,7 +480,10 @@ class Nao (Robot):
             else:
                 try:
                     (conn, addr) = sock.accept()
-                    conn.send(umsgpack.packb(self.sensors))
+                    packed = umsgpack.packb(self.sensors, force_float_precision="single")
+                    if len(packed) != self.MSGPACK_READ_LENGTH:
+                        print(AnsiCodes.RED_FOREGROUND + "Msgpack packet size doesn't match LoLA specifications."  + AnsiCodes.RESET)
+                    conn.send(packed)
                     print(AnsiCodes.GREEN_FOREGROUND + "LoLa client connected." + AnsiCodes.RESET)
                 except:
                     conn = None
@@ -490,7 +497,8 @@ class Nao (Robot):
             self.topImageServer.stop()
             self.bottomImageServer.stop()
 
-
+# Enable Msgpack Old Specification Compatibility Mode, which is used in LoLA
+umsgpack.compatibility = True
 
 # create the Robot instance and run main loop
 robot = Nao()
