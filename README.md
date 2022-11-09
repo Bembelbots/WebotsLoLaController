@@ -11,7 +11,7 @@ By default the controller will (ab)use the battery temperature field (last value
 
 ## Dependencies
 
-The controller is written in Python3 and has been tested to work with Webots 2022a & 2022b (nightly).
+The controller is written in Python3 and has been tested to work with Webots 2022b.
 It depends on [OpenCV](https://pypi.org/project/opencv-python/) and [NumPy](https://numpy.org/) python modules for converting camera images to YUV422.
 
 

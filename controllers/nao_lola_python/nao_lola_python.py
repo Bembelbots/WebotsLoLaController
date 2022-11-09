@@ -450,7 +450,10 @@ class Nao (Robot):
         conn = None
         imgCounter = self.frametime
 
-        while robot.step(self.timeStep) != -1:
+        while True:
+            if self.stepBegin(self.timeStep) == -1:
+                break
+
             self.key = self.keyboard.getKey()
 
             if conn:
@@ -487,7 +490,11 @@ class Nao (Robot):
                     print(AnsiCodes.GREEN_FOREGROUND + "LoLa client connected." + AnsiCodes.RESET)
                 except:
                     conn = None
+                    self.stepEnd()
                     continue
+
+            if self.stepEnd() == -1:
+                break
 
         # remove socket on exit
         os.unlink(self.SOCK_PATH)

@@ -1,8 +1,11 @@
-#VRML_SIM R2022a utf8
+#VRML_SIM R2022b utf8
 # documentation url: https://www.cyberbotics.com/doc/guide/nao
 # Generic model of Nao robot
 # Model designed by Cyberbotics Ltd. according to the online documentation provided by Aldebaran Robotics.
 # template language: javascript
+
+EXTERNPROTO "../protos/NaoLeftWristH25Realistic.proto"
+EXTERNPROTO "../protos/NaoRightWristH25Realistic.proto"
 
 PROTO NaoV6 [
   field SFVec3f                      translation           0 0 0.334             # Is `Transform.translation`.

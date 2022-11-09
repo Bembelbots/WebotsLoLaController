@@ -1,4 +1,10 @@
-#VRML_SIM R2022a utf8 
+#VRML_SIM R2022b utf8
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/SPL_Field.proto"
+EXTERNPROTO "../protos/SPL_Ball.proto"
+EXTERNPROTO "../protos/NaoV6.proto"
+EXTERNPROTO "../protos/NaoJersey.proto"
 WorldInfo {
   info [
     "Simulation of the Robocup Standard Platform League"
@@ -48,7 +54,7 @@ DEF Blue1 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_1.png"
+      "../protos/textures/nao_jersey_dark_1.png"
     ]
     jerseyColor 0 0.75 1
   }
@@ -63,7 +69,7 @@ DEF Blue2 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_2.png"
+      "../protos/textures/nao_jersey_dark_2.png"
     ]
     jerseyColor 0 0.75 1
   }
@@ -78,7 +84,7 @@ DEF Blue3 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_3.png"
+      "../protos/textures/nao_jersey_dark_3.png"
     ]
     jerseyColor 0 0.75 1
   }
@@ -93,7 +99,7 @@ DEF Blue4 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_4.png"
+      "../protos/textures/nao_jersey_dark_4.png"
     ]
     jerseyColor 0 0.75 1
   }
@@ -108,7 +114,7 @@ DEF Blue5 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_5.png"
+      "../protos/textures/nao_jersey_dark_5.png"
     ]
     jerseyColor 0 0.75 1
   }
@@ -123,7 +129,7 @@ DEF Red1 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_1.png"
+      "../protos/textures/nao_jersey_dark_1.png"
     ]
     jerseyColor 0.5 0 0
   }
@@ -138,7 +144,7 @@ DEF Red2 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_2.png"
+      "../protos/textures/nao_jersey_dark_2.png"
     ]
     jerseyColor 0.5 0 0
   }
@@ -153,7 +159,7 @@ DEF Red3 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_3.png"
+      "../protos/textures/nao_jersey_dark_3.png"
     ]
     jerseyColor 0.5 0 0
   }
@@ -168,7 +174,7 @@ DEF Red4 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_4.png"
+      "../protos/textures/nao_jersey_dark_4.png"
     ]
     jerseyColor 0.5 0 0
   }
@@ -183,7 +189,7 @@ DEF Red5 NaoV6 {
   ]
   jersey NaoJersey {
     jerseyTexture [
-      "textures/nao_jersey_dark_5.png"
+      "../protos/textures/nao_jersey_dark_5.png"
     ]
     jerseyColor 0.5 0 0
   }
