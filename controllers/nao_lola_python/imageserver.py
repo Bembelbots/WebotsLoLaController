@@ -15,7 +15,8 @@ class CamIndex(Enum):
 
 class ImageServer:
     def __init__(self, addr, img_w, img_h, camera):
-        self.img_dim = (img_w, img_h)  # image dimensions
+        self.img_h = img_h
+        self.img_w = img_w
         self.img_bytes = img_w*img_h*2 # image size in bytes
         self.camera = camera           # camera
         self.running = True
@@ -47,17 +48,15 @@ class ImageServer:
 
 
     def bgra2yuv(self, buf):
-        bgra = np.frombuffer(buf, dtype=np.uint8).reshape(*self.img_dim, 4)
+        bgra = np.frombuffer(buf, dtype=np.uint8).reshape(self.img_h, self.img_w, 4)
         bgr = cv2.cvtColor(bgra, cv2.COLOR_BGRA2BGR)
-        y, u, v = cv2.split(cv2.cvtColor(bgra, cv2.COLOR_BGR2YUV))
-
-        rows, cols = y.shape
+        y, u, v = cv2.split(cv2.cvtColor(bgr, cv2.COLOR_BGR2YUV))
 
         # Downsample u horizontally
-        u = cv2.resize(u, (cols//2, rows), interpolation=cv2.INTER_LINEAR)
+        u = cv2.resize(u, (self.img_w//2, self.img_h), interpolation=cv2.INTER_LINEAR)
 
         # Downsample v horizontally
-        v = cv2.resize(v, (cols//2, rows), interpolation=cv2.INTER_LINEAR)
+        v = cv2.resize(v, (self.img_w//2, self.img_h), interpolation=cv2.INTER_LINEAR)
 
         # Interleave u and v:
         uv = np.zeros_like(y)
@@ -81,7 +80,7 @@ class ImageServer:
 
             if conn:
                 img = self.bgra2yuv(img)
-                header = struct.pack("8sHBBHH", b'wbimage\x00', tick, self.camera.value, 2, *self.img_dim)
+                header = struct.pack("8sHBBHH", b'wbimage\x00', tick, self.camera.value, 2, self.img_w, self.img_h)
 
                 try:
                     conn.send(header)
