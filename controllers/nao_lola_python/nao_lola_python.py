@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from controller import Robot, Keyboard, AnsiCodes
 
 import os
